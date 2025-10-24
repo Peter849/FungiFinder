@@ -2,6 +2,7 @@ import argparse
 
 from utils.image_loader import resolve_path, read_image
 from preprocessing.pipeline import preprocessing_pipeline
+from masking.pipeline import masking_pipeline
 
 def main():
     parser = argparse.ArgumentParser(
@@ -28,6 +29,13 @@ def main():
         median_ksize=args.median_ksize,
         clahe_clip_limit=args.clahe_clip,
         clahe_tile_grid=tuple(map(int, args.clahe_grid.lower().split("x"))),
+        save_intermediates_results=not args.no_save,
+    )
+
+    preprocessed_image = preprocessed_results["contrast_enhanced"]
+
+    mask_results = masking_pipeline(
+        preprocessed_image=preprocessed_image,
         save_intermediates_results=not args.no_save,
     )
 
