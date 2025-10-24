@@ -1,7 +1,7 @@
 import argparse
 
-from utils.image_loader import resolve_path
-from preprocessing.pipeline import preprocess_pipeline
+from utils.image_loader import resolve_path, read_image
+from preprocessing.pipeline import preprocessing_pipeline
 
 def main():
     parser = argparse.ArgumentParser(
@@ -18,8 +18,13 @@ def main():
 
     print("==== Képfeldolgozási Pipeline ====")
 
-    preprocessed_result = preprocess_pipeline(
-        image_path=resolve_path(args.image),
+    bgr = read_image(resolve_path(args.image))
+
+    if bgr is None:
+        raise ValueError(f"Az eredeti kép sikertelen beolvasása!: {args.image}")
+
+    preprocessed_results = preprocessing_pipeline(
+        original_image=bgr,
         median_ksize=args.median_ksize,
         clahe_clip_limit=args.clahe_clip,
         clahe_tile_grid=tuple(map(int, args.clahe_grid.lower().split("x"))),

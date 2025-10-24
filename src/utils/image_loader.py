@@ -1,6 +1,7 @@
-from pathlib import Path
-import cv2 as cv
 import numpy as np
+import cv2 as cv
+from typing import Any, Dict
+from pathlib import Path
 
 def resolve_path(path: str | Path, base: str | Path | None = None) -> Path:
     """
@@ -35,3 +36,22 @@ def read_image(full_path: str | Path) -> np.ndarray:
         raise ValueError(f"Hibás képformátum vagy sikertelen beolvasás: {image_path}")
 
     return image
+
+def save_pipeline_results(
+    images: Dict[str, Any],
+    stage: str = "results",
+) -> Path:
+    """
+    A pipeline lépéseinek képkimeneteit a projekt data/<stage> mappájába menti a paraméterekkel elnevezve.
+    """
+
+    project_root = Path(__file__).resolve().parents[2]
+    out_dir = project_root / "data" / stage
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    for name, image in images.items():
+        if hasattr(image, "shape"):  # np.ndarray ellenőrzés
+            filename = f"{name}.png"
+            cv.imwrite(str(out_dir / filename), image)
+
+    return out_dir
