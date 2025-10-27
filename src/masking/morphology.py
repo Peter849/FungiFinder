@@ -11,8 +11,14 @@ def clean_mask_with_morphology(binary_mask: np.ndarray, kernel_size: int = 5, it
     Kimenet: Finomított bináris maszk
     """
 
-    print("\t\t2. Morfológiai tisztítás")
+    print("\t\t3. Morfológiai tisztítás")
 
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
-    cleaned_mask = cv2.morphologyEx(binary_mask, cv2.MORPH_OPEN, kernel, iterations=iterations)
+
+    # Nyitás: kis fehér zajok eltávolítása a képről
+    mask_opened = cv2.morphologyEx(binary_mask, cv2.MORPH_OPEN, kernel, iterations=iterations)
+    
+    # Zárás: apró fekete lyukak betömése (pl. a detektálandó objektumokon belül)
+    cleaned_mask = cv2.morphologyEx(mask_opened, cv2.MORPH_CLOSE, kernel, iterations=1)
+    
     return cleaned_mask
