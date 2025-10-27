@@ -3,6 +3,7 @@ import argparse
 from utils.image_loader import resolve_path, read_image
 from preprocessing.pipeline import preprocessing_pipeline
 from masking.pipeline import masking_pipeline
+from segmentation.pipeline import watershed_pipeline
 
 def main():
     parser = argparse.ArgumentParser(
@@ -36,6 +37,14 @@ def main():
 
     mask_results = masking_pipeline(
         preprocessed_image=preprocessed_image,
+        save_intermediates_results=not args.no_save,
+    )
+
+    cleaned_mask = mask_results["cleaned_mask"]
+
+    segmentation_results = watershed_pipeline(
+        preprocessed_image=preprocessed_image,
+        cleaned_mask=cleaned_mask,
         save_intermediates_results=not args.no_save,
     )
 
