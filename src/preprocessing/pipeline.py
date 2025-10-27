@@ -48,7 +48,7 @@ def preprocessing_pipeline(
                 "2_median_k{median_ksize}": denoised,
                 "3_clahe_clip{clahe_clip_limit}_grid{clahe_tile_grid[0]}x{clahe_tile_grid[1]}": contrast_enhanced,
             },
-            stage="preprocessed",
+            stage="1_preprocessing",
         )
 
     return results
