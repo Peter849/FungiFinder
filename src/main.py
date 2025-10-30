@@ -1,9 +1,10 @@
 import argparse
 
-from utils.image_loader import resolve_path, read_image
+from utils.image_loader import resolve_path, read_image, save_pipeline_results
 from preprocessing.pipeline import preprocessing_pipeline
 from masking.pipeline import masking_pipeline
 from segmentation.pipeline import watershed_pipeline
+from utils.visualization import colorize_labels
 
 def main():
     parser = argparse.ArgumentParser(
@@ -40,13 +41,30 @@ def main():
         save_intermediates_results=not args.no_save,
     )
 
-    cleaned_mask = mask_results["cleaned_mask"]
+    cleaned_mask = mask_results["filtered_binary_mask"]
 
     segmentation_results = watershed_pipeline(
         preprocessed_image=preprocessed_image,
         cleaned_mask=cleaned_mask,
         save_intermediates_results=not args.no_save,
     )
+
+    watershed_labels = segmentation_results["watershed_labels"]
+
+    # --- Színezett eredmény a vizualizációhoz ---
+    # A grayscaled kép a háttér
+    watershed_colorized_gray = colorize_labels(preprocessed_results["gray"], watershed_labels)
+    # Az eredeti kép a háttér
+    watershed_colorized_original = colorize_labels(bgr, watershed_labels)
+
+    if not args.no_save:
+        save_pipeline_results(
+            {
+                "13_watershed_colorized_gray": watershed_colorized_gray,
+                "14_watershed_colorized_original": watershed_colorized_original,
+            },
+            stage="4_results",
+        )
 
     print("=== Pipeline sikeresen lefutott ===")
 

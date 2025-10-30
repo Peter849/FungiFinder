@@ -6,7 +6,6 @@ from .distance_transform import compute_distance_transform
 from .markers import create_markers
 from .watershed import run_watershed
 from utils.image_loader import save_pipeline_results
-from utils.visualization import colorize_labels
 
 def watershed_pipeline(
     preprocessed_image,
@@ -32,9 +31,6 @@ def watershed_pipeline(
     # --- 3.3 Saját Watershed futtatása ---
     watershed_labels = run_watershed(preprocessed_image, markers)
 
-    # --- Színezett eredmény a vizualizációhoz ---
-    watershed_colorized = colorize_labels(preprocessed_image, watershed_labels)
-
     # --- Mentés ---
     if save_intermediates_results:
         save_pipeline_results(
@@ -44,7 +40,6 @@ def watershed_pipeline(
                 "9_sure_bg": sure_bg * 255,
                 "10_markers": markers,
                 "11_watershed_labels": (watershed_labels > 1).astype(np.uint8) * 255,
-                "12_watershed_colorized": watershed_colorized,
             },
             stage="3_segmentation",
         )
@@ -55,7 +50,6 @@ def watershed_pipeline(
         "sure_bg": sure_bg,
         "markers": markers,
         "watershed_labels": watershed_labels,
-        "watershed_colorized": watershed_colorized
     }
 
     return results

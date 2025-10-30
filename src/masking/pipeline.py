@@ -22,24 +22,24 @@ def masking_pipeline(
     # 1. Otsu thresholding
     binary_mask = apply_otsu_threshold(preprocessed_image)
 
-    # 2. Nem körszerű, nem elég nagy részek kiszűrése
-    filtered_binary_mask = filter_by_shape_and_size(binary_mask)
+    # 2. Morfológiai javítás
+    cleaned_mask = clean_mask_with_morphology(binary_mask, kernel_size=kernel_size, iterations=iterations)
 
-    # 3. Morfológiai javítás
-    cleaned_mask = clean_mask_with_morphology(filtered_binary_mask, kernel_size=kernel_size, iterations=iterations)
+    # 3. Nem körszerű, nem elég nagy részek kiszűrése
+    filtered_binary_mask = filter_by_shape_and_size(cleaned_mask)
 
     results: Dict[str, Any] = {
         "binary_mask": binary_mask,
-        "filtered_binary_mask": filtered_binary_mask,
         "cleaned_mask": cleaned_mask,
+        "filtered_binary_mask": filtered_binary_mask,
     }
 
     if save_intermediates_results:
         image_loader.save_pipeline_results(
             {
                 "4_otsu_thresholding": binary_mask,
-                "5_filtered_binary_mask": filtered_binary_mask,
-                "6_morphology_k{kernel_size}_it{iterations}": cleaned_mask,
+                "5_morphology_k{kernel_size}_it{iterations}": cleaned_mask,
+                "6_filtered_binary_mask": filtered_binary_mask,
             },
             stage="2_masking",
         )

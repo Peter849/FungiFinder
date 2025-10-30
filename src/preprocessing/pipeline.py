@@ -34,13 +34,6 @@ def preprocessing_pipeline(
         denoised, clip_limit=clahe_clip_limit, tile_grid_size=clahe_tile_grid
     )
 
-    # Kimenet: a pipeline egyes lépéseinek eredményei
-    results: Dict[str, Any] = {
-        "gray": gray,
-        "denoised": denoised,
-        "contrast_enhanced": contrast_enhanced,
-    }
-
     if save_intermediates_results:
         image_loader.save_pipeline_results(
             {
@@ -50,5 +43,12 @@ def preprocessing_pipeline(
             },
             stage="1_preprocessing",
         )
+
+    # Kimenet: a pipeline egyes lépéseinek eredményei
+    results: Dict[str, Any] = {
+        "gray": gray,
+        "denoised": denoised,
+        "contrast_enhanced": contrast_enhanced,
+    }
 
     return results
