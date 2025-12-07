@@ -5,6 +5,7 @@ from preprocessing.pipeline import preprocessing_pipeline
 from masking.pipeline import masking_pipeline
 from segmentation.pipeline import watershed_pipeline
 from postprocessing.pipeline import postprocessing_pipeline
+from validation import validate_results
 
 def main():
 
@@ -20,6 +21,8 @@ def main():
     parser.add_argument("--iterations", type=int, default=2, help="Morfológiai műveletek iterációszáma")
     parser.add_argument("--min-area", type=int, default=300, help="Minimális gombaterület a szűréshez")
     parser.add_argument("--min-circularity", type=float, default=0.3, help="Minimális körkörösség a gombaszűréshez")
+    parser.add_argument("--manual-count", type=int, help="Manuálisan megszámolt gombák száma a validációhoz")
+    parser.add_argument("--tolerance", type=int, default=0, help="A Watershed által detektált gombák számának megengedett eltérése a manuálisan megszámolthoz képest")
     parser.add_argument("--no-save", action="store_true", help="Ne mentsen köztes fájlokat")
 
     args = parser.parse_args()
@@ -68,6 +71,13 @@ def main():
     
     print("=== Pipeline sikeresen lefutott ===")    
 
+    validate_results(
+        watershed_labels=watershed_labels,
+        size_filtered_labels=postprocessed_results["size_filtered_labels"],
+        final_labels=postprocessed_results["final_labels"],
+        manual_count=args.manual_count,
+        tolerance=args.tolerance,
+    )
 
 if __name__ == "__main__":
     main()
