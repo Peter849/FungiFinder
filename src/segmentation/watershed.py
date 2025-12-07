@@ -21,7 +21,7 @@ def run_watershed(preprocessed_gray_image: np.ndarray, markers: np.ndarray) -> n
         labels: A végső, szegmentált címkekép.
     """
 
-    print("\t\t3. Saját (gyorsított) Watershed algoritmus futtatása")
+    print("\t\t3. Watershed algoritmus futtatása")
 
     height, width = preprocessed_gray_image.shape
 

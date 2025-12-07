@@ -4,9 +4,10 @@ from utils.image_loader import resolve_path, read_image, save_pipeline_results
 from preprocessing.pipeline import preprocessing_pipeline
 from masking.pipeline import masking_pipeline
 from segmentation.pipeline import watershed_pipeline
-from utils.visualization import colorize_labels
+from postprocessing.pipeline import postprocessing_pipeline
 
 def main():
+
     parser = argparse.ArgumentParser(
         description="Teljes képfeldolgozási pipeline (előfeldolgozás + később szegmentálás)"
     )
@@ -15,6 +16,10 @@ def main():
     parser.add_argument("--median-ksize", type=int, default=3, help="Medián szűrő kernelméret")
     parser.add_argument("--clahe-clip", type=float, default=3.0, help="CLAHE clip limit (minél nagyobb, annál erősebb kontraszt)")
     parser.add_argument("--clahe-grid", type=str, default="4x4", help="CLAHE tile grid méret pl. 4x4 (minél kisebb, annál erősebb kontraszt)")
+    parser.add_argument("--kernel-size", type=int, default=3, help="Morfológiai műveletek kernelmérete")
+    parser.add_argument("--iterations", type=int, default=2, help="Morfológiai műveletek iterációszáma")
+    parser.add_argument("--min-area", type=int, default=300, help="Minimális gombaterület a szűréshez")
+    parser.add_argument("--min-circularity", type=float, default=0.3, help="Minimális körkörösség a gombaszűréshez")
     parser.add_argument("--no-save", action="store_true", help="Ne mentsen köztes fájlokat")
 
     args = parser.parse_args()
@@ -37,11 +42,13 @@ def main():
     preprocessed_image = preprocessed_results["contrast_enhanced"]
 
     mask_results = masking_pipeline(
+        kernel_size=args.kernel_size,
+        iterations=args.iterations,
         preprocessed_image=preprocessed_image,
         save_intermediates_results=not args.no_save,
     )
 
-    cleaned_mask = mask_results["filtered_binary_mask"]
+    cleaned_mask = mask_results["cleaned_mask"]
 
     segmentation_results = watershed_pipeline(
         preprocessed_image=preprocessed_image,
@@ -51,22 +58,15 @@ def main():
 
     watershed_labels = segmentation_results["watershed_labels"]
 
-    # --- Színezett eredmény a vizualizációhoz ---
-    # A grayscaled kép a háttér
-    watershed_colorized_gray = colorize_labels(preprocessed_results["gray"], watershed_labels)
-    # Az eredeti kép a háttér
-    watershed_colorized_original = colorize_labels(bgr, watershed_labels)
-
-    if not args.no_save:
-        save_pipeline_results(
-            {
-                "13_watershed_colorized_gray": watershed_colorized_gray,
-                "14_watershed_colorized_original": watershed_colorized_original,
-            },
-            stage="4_results",
-        )
-
-    print("=== Pipeline sikeresen lefutott ===")
+    postprocessed_results = postprocessing_pipeline(
+        original_image=bgr,
+        labels=watershed_labels,
+        min_area=args.min_area,
+        min_circularity=args.min_circularity,
+        save_intermediates_results=not args.no_save,
+    )
+    
+    print("=== Pipeline sikeresen lefutott ===")    
 
 
 if __name__ == "__main__":

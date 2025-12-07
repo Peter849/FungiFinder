@@ -35,11 +35,11 @@ def watershed_pipeline(
     if save_intermediates_results:
         save_pipeline_results(
             {
-                "7_distance_visualization": distance_visualization,
-                "8_sure_fg": sure_fg * 255,
-                "9_sure_bg": sure_bg * 255,
-                "10_markers": markers,
-                "11_watershed_labels": (watershed_labels > 1).astype(np.uint8) * 255,
+                "6_distance_visualization": distance_visualization,
+                "7_sure_fg": sure_fg * 255,
+                "8_sure_bg": sure_bg * 255,
+                "9_markers": markers,
+                "10_watershed_labels": (watershed_labels > 1).astype(np.uint8) * 255,
             },
             stage="3_segmentation",
         )

@@ -11,7 +11,7 @@ def clean_mask_with_morphology(binary_mask: np.ndarray, kernel_size: int = 5, it
     Kimenet: Finomított bináris maszk
     """
 
-    print("\t\t3. Morfológiai tisztítás")
+    print("\t\t2. Morfológiai tisztítás")
 
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
 

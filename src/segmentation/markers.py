@@ -36,11 +36,4 @@ def create_markers(distance_map: np.ndarray,
     markers = markers + 1
     markers[unknown_region == 1] = 0
 
-    vis = np.zeros((*markers.shape, 3), dtype=np.uint8)
-    vis[markers == 0] = (0, 0, 255)      # ismeretlen (piros)
-    vis[markers == 1] = (0, 0, 0)        # háttér (fekete)
-    vis[markers > 1] = (0, 255, 0)       # előtér (zöld)
-    cv.imshow("Markers", vis)
-    cv.waitKey(0)
-
     return sure_fg, sure_bg, markers
