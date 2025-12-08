@@ -58,9 +58,9 @@ def postprocessing_pipeline(
     if save_intermediates_results:
         image_loader.save_pipeline_results(
             {
-                "11_watershed_original_result": colorize_labels(original_image, labels, colors=colors),
-                "12_watershed_size_filtered_result": colorize_labels(original_image, size_filtered_labels, colors=colors),
-                "13_watershed_shape_filtered_result": colorize_labels(original_image, final_shape_filtered_labels, colors=colors),
+                "12_watershed_original_result": colorize_labels(original_image, labels, colors=colors),
+                "13_watershed_size_filtered_result": colorize_labels(original_image, size_filtered_labels, colors=colors),
+                "14_watershed_shape_filtered_result": colorize_labels(original_image, final_shape_filtered_labels, colors=colors),
             },
             stage="4_postprocessing"
         )

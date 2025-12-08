@@ -2,7 +2,7 @@ import numpy as np
 from typing import Optional
 
 def validate_results(
-    watershed_labels: np.ndarray,
+    D: np.ndarray,
     size_filtered_labels: np.ndarray,
     final_labels: np.ndarray,
     manual_count: Optional[int],
@@ -16,9 +16,9 @@ def validate_results(
 
     print("\n--- Szűrési Statisztikák ---")
     print(f"\tWatershed algoritmus alapján szegmentált objektumok: {watershed_count}")
-    print(f"\tA watershed által szegmentált objektumokon végzett MÉRET alapján történő szűrés után megmaradt objektumok száma: {size_filtered_count} (eltávolítva: {initial_count - size_filtered_count})")
+    print(f"\tA watershed által szegmentált objektumokon végzett MÉRET alapján történő szűrés után megmaradt objektumok száma: {size_filtered_count} (eltávolítva: {watershed_count - size_filtered_count})")
     print(f"\tA watershed által szegmentált objektumokon végzett ALAK alapján történő szűrés után megmaradt objektumok száma:: {final_count} (eltávolítva: {size_filtered_count - final_count})")
-    print(f"\t  -> Összesen kiszűrt objektum: {watershed_count - final_count}")
+    print(f"\t  -> Összes megtalált gombák száma: {watershed_count - final_count}")
 
     if manual_count is not None:
         print("\n--- Manuális Összehasonlítás ---")

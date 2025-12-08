@@ -43,9 +43,26 @@ def colorize_labels(
             mask = labels == label
             colorized[mask] = palette[label]
 
-    # watershed határok pirossal
-    colorized[labels == -1] = (0, 0, 255)
-
     # keverés az eredeti képpel
     blended = cv.addWeighted(base, 0.4, colorized, 0.6, 0)
     return blended
+
+
+def colorize_watershed_lines(image: np.ndarray, labels: np.ndarray) -> np.ndarray:
+    """
+    Csak a watershed határvonalak kirajzolása az eredeti képre.
+    A határvonalak (label == -1) pirossal jelennek meg.
+    """
+
+    if len(image.shape) == 2:
+        base = cv.cvtColor(image, cv.COLOR_GRAY2BGR)
+    else:
+        base = image.copy()
+
+    output = base.copy()
+
+    # Watershed-vonalak (label == -1) piros színnel megjelenítve
+    mask = (labels == -1)
+    output[mask] = (0, 0, 255)
+
+    return output

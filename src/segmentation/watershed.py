@@ -1,7 +1,4 @@
 import numpy as np
-import cv2 as cv
-import heapq
-
 
 def run_watershed(preprocessed_gray_image: np.ndarray, markers: np.ndarray) -> np.ndarray:
     """

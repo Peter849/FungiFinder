@@ -3,9 +3,9 @@ import numpy as np
 import cv2 as cv
 
 def enhance_contrast_clahe(
+    clip_limit,
+    tile_grid_size,
     img: np.ndarray,
-    clip_limit: float = 2.0,
-    tile_grid_size: Tuple[int, int] = (8, 8),
 ) -> np.ndarray:
     """
     Lokális hisztogram-kiegyenlítés CLAHE algoritmussal; a gyenge megvilágítású vagy árnyékos részek részleteinek kiemelése.

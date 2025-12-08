@@ -8,9 +8,9 @@ from .contrast_histogram_equalization import enhance_contrast_clahe
 
 def preprocessing_pipeline(
     original_image,
-    median_ksize: int = 3,
-    clahe_clip_limit: float = 2.0,
-    clahe_tile_grid: Tuple[int, int] = (8, 8),
+    median_ksize,
+    clahe_clip_limit,
+    clahe_tile_grid,
     save_intermediates_results: bool = True,
 ) -> Dict[str, Any]:
     """
@@ -31,7 +31,9 @@ def preprocessing_pipeline(
 
     # 3. Kontrasztjavítás hisztogram kiegyenlítéssel
     contrast_enhanced = enhance_contrast_clahe(
-        denoised, clip_limit=clahe_clip_limit, tile_grid_size=clahe_tile_grid
+        clip_limit=clahe_clip_limit,
+        tile_grid_size=clahe_tile_grid,
+        img=denoised,
     )
 
     if save_intermediates_results:

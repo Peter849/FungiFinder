@@ -6,6 +6,7 @@ from .distance_transform import compute_distance_transform
 from .markers import create_markers
 from .watershed import run_watershed
 from utils.image_loader import save_pipeline_results
+from utils.visualization import colorize_watershed_lines
 
 def watershed_pipeline(
     preprocessed_image,
@@ -40,6 +41,10 @@ def watershed_pipeline(
                 "8_sure_bg": sure_bg * 255,
                 "9_markers": markers,
                 "10_watershed_labels": (watershed_labels > 1).astype(np.uint8) * 255,
+                "11_watershed_lines_colorized": colorize_watershed_lines(
+                    (watershed_labels > 1).astype(np.uint8) * 255,
+                    watershed_labels,
+                ),
             },
             stage="3_segmentation",
         )

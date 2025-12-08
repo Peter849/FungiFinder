@@ -13,16 +13,29 @@ def main():
         description="Teljes képfeldolgozási pipeline (előfeldolgozás + később szegmentálás)"
     )
 
+    # A bemeneti kép (kötelezően megadandó)
     parser.add_argument("image", type=str, help="Bemeneti kép elérési útja")
-    parser.add_argument("--median-ksize", type=int, default=3, help="Medián szűrő kernelméret")
-    parser.add_argument("--clahe-clip", type=float, default=3.0, help="CLAHE clip limit (minél nagyobb, annál erősebb kontraszt)")
-    parser.add_argument("--clahe-grid", type=str, default="4x4", help="CLAHE tile grid méret pl. 4x4 (minél kisebb, annál erősebb kontraszt)")
-    parser.add_argument("--kernel-size", type=int, default=3, help="Morfológiai műveletek kernelmérete")
-    parser.add_argument("--iterations", type=int, default=2, help="Morfológiai műveletek iterációszáma")
+    
+    # Előfeldolgozási paraméterek
+    parser.add_argument("--median-ksize", type=int, default=5, help="Medián szűrő kernelméret")
+    parser.add_argument("--clahe-clip", type=float, default=5.0, help="CLAHE clip limit (minél nagyobb, annál erősebb kontraszt)")
+    parser.add_argument("--clahe-grid", type=str, default="3x3", help="CLAHE tile grid méret pl. 4x4 (minél kisebb, annál erősebb kontraszt)")
+    
+    # Maszkolási paraméterek
+    parser.add_argument("--kernel-size-open", type=int, default=3, help="Nyitás morfológiai művelet kernelmérete")
+    parser.add_argument("--kernel-size-close", type=int, default=2, help="Zárás morfológiai művelet kernelmérete")
+    parser.add_argument("--iterations-open", type=int, default=3, help="Nyitás morfológiai művelet iterációszáma")
+    parser.add_argument("--iterations-close", type=int, default=2, help="Zárás morfológiai művelet iterációszáma")
+
+    # Utófeldolgozási paraméterek
     parser.add_argument("--min-area", type=int, default=300, help="Minimális gombaterület a szűréshez")
-    parser.add_argument("--min-circularity", type=float, default=0.3, help="Minimális körkörösség a gombaszűréshez")
+    parser.add_argument("--min-circularity", type=float, default=0.5, help="Minimális körkörösség a gombaszűréshez")
+    
+    # Validáció paraméterek
     parser.add_argument("--manual-count", type=int, help="Manuálisan megszámolt gombák száma a validációhoz")
     parser.add_argument("--tolerance", type=int, default=0, help="A Watershed által detektált gombák számának megengedett eltérése a manuálisan megszámolthoz képest")
+    
+    # Egyéb paraméterek
     parser.add_argument("--no-save", action="store_true", help="Ne mentsen köztes fájlokat")
 
     args = parser.parse_args()
@@ -45,8 +58,10 @@ def main():
     preprocessed_image = preprocessed_results["contrast_enhanced"]
 
     mask_results = masking_pipeline(
-        kernel_size=args.kernel_size,
-        iterations=args.iterations,
+        kernel_size_open=args.kernel_size_open,
+        kernel_size_close=args.kernel_size_close,
+        iterations_open=args.iterations_open,
+        iterations_close=args.iterations_close,
         preprocessed_image=preprocessed_image,
         save_intermediates_results=not args.no_save,
     )
@@ -74,7 +89,7 @@ def main():
     validate_results(
         watershed_labels=watershed_labels,
         size_filtered_labels=postprocessed_results["size_filtered_labels"],
-        final_labels=postprocessed_results["final_labels"],
+        final_labels=postprocessed_results["final_shape_filtered_labels"],
         manual_count=args.manual_count,
         tolerance=args.tolerance,
     )

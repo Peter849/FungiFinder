@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-def denoise_median(gray: np.ndarray, ksize: int = 5) -> np.ndarray:
+def denoise_median(gray: np.ndarray, ksize) -> np.ndarray:
     """
     Zajcsökkentés medián szűrővel; minden pixel értékét a környező pixelek mediánjával helyettesíti.
     Paraméterek:

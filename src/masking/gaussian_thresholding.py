@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def apply_otsu_threshold(img: np.ndarray) -> np.ndarray:
+def apply_gaussian_threshold(img: np.ndarray) -> np.ndarray:
     """
     Bináris maszkolás megvalósítása Otsu küszöbölési módszer alkalmazásával szürkeárnyalatos képen.
     """
