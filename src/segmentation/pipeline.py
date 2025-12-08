@@ -4,7 +4,7 @@ import numpy as np
 
 from .distance_transform import compute_distance_transform
 from .markers import create_markers
-from .watershed import run_watershed
+from .watershed_opencv import run_watershed
 from utils.image_loader import save_pipeline_results
 from utils.visualization import colorize_watershed_lines
 
